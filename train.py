@@ -149,3 +149,23 @@ if __name__ == "__main__":
     save_path = 'siameseNet-batchnorm50.pt'
 
     train_losses, val_losses = train(siameseBaseLine, train_loader, val_loader, num_epochs, criterion, save_path)
+
+    # Evaluation on previously saved models
+    load_model = Net().to(device)
+    load_optimizer = optim.Adam(load_model.parameters(), lr=0.0006)
+
+    num_epochs = 10
+    eval_every = 1000
+    total_step = len(train_loader) * num_epochs
+    best_val_loss = load_checkpoint(load_model, load_optimizer)
+
+    print(best_val_loss)
+    eval(load_model, test_loader)
+
+    # plotting of training and validation loss
+    plt.xlabel('epoch')
+    plt.ylabel('loss')
+    plt.plot(train_losses, label='Train Loss')
+    plt.plot(val_losses, label="Validation Loss")
+    plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
+    plt.show()
